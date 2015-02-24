@@ -13,7 +13,7 @@ int main(){
 	bool areNeighbors = Neighbors(graph.nodes[1], graph.nodes[2]);
 	std::cout << "Node 1 and Node 5 are neighbors: " << areNeighbors << std::endl;
 
-	std::cout << graph.SearchBFS(graph.nodes[11], graph.nodes[12]) << std::endl;
+	std::cout << graph.SearchBFS(graph.nodes[3], graph.nodes[12]) << std::endl;
 
 	std::cout << "What has been visted" << std::endl;
 	for (int i = 0; i < graph.nodes.size(); i++){

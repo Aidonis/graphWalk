@@ -20,6 +20,7 @@ public:
 	int x, y;
 	int weight;
 	bool visited;
+	GraphNode* previousNode;
 
 	EdgeList edges;
 

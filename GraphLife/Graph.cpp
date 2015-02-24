@@ -6,6 +6,7 @@ GraphNode::GraphNode(int a_x, int a_y){
 	y = a_y;
 	visited = false;
 	weight = 0;
+	previousNode = NULL;
 }
 
 void GraphNode::AddEdge(GraphNode * a_node){
@@ -110,13 +111,28 @@ bool Graph::SearchBFS(GraphNode* a_Start, GraphNode* a_End){
 }
 
 bool Graph::SearchDJK(GraphNode* a_Start, GraphNode* a_End){
-	std::list<GraphNode*> nodeList;
-	nodeList.push_front(a_Start);
-
-	while (!nodeList.empty()){
-		GraphNode* current = nodeList.front();
-		nodeList.pop_front();
+	std::list<GraphNode*>nodeList;
+	for (int i = 0; i < nodes.size(); i++){
+		nodes[i]->weight = INFINITY;
 	}
+	a_Start->weight = 0;
+	nodeList.push_back(a_Start);
+	while (!nodeList.empty()){
+		GraphNode* current = nodeList.back();
+		nodeList.pop_back();
+		if (current->visited == true){
+			continue;
+		}
+		current->visited = true;
+		if (current == a_End){
+			return true;
+		}
+		for (int i = 0; i < current->edges.size(); i++){
+			nodeList.push_back(current->edges[i].End);
+		}
+		
+	}
+	return false;
 }
 
 bool Neighbors(GraphNode* a_nodeA, GraphNode* a_nodeB){
