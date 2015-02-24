@@ -12,33 +12,37 @@ struct Edge;
 
 typedef std::vector<Edge> EdgeList;
 
+struct Vec2{
+	float x, y;
+};
 
 class GraphNode
 {
 public:
 	GraphNode(int a_x, int a_y);
-	int x, y;
-	int weight;
+	Vec2 pos;
+
 	bool visited;
+	
+	//Heuristic
 	GraphNode* previousNode;
+	float weight;
+	void ResetVisit();
 
+	//Edges
 	EdgeList edges;
-
 	void AddEdge(GraphNode* a_node);
 	void RemoveEdge(GraphNode* a_node);
-
-	bool NodeCompare(const GraphNode* a_left, const GraphNode* a_Right){
-		return (a_left->weight < a_Right->weight);
-	}
-
 };
+
+bool NodeCompare(const GraphNode* a_left, const GraphNode* a_Right);
 
 bool Neighbors(GraphNode* a_nodeA, GraphNode* a_nodeB);
 
 struct Edge{
 	GraphNode* Start;
 	GraphNode* End;
-
+	float cost;
 };
 
 
@@ -48,6 +52,8 @@ class Graph{
 public:
 	Graph();
 	Graph(unsigned int a_size);
+
+	//static GraphNode * goal;
 
 	void AddNode(GraphNode* a_Node);
 	void RemoveNode(GraphNode* a_Node);

@@ -2,17 +2,19 @@
 
 //Graph Nodes
 GraphNode::GraphNode(int a_x, int a_y){
-	x = a_x;
-	y = a_y;
+	pos.x = a_x;
+	pos.y = a_y;
 	visited = false;
 	weight = 0;
 	previousNode = NULL;
+	weight = INFINITY;
 }
 
 void GraphNode::AddEdge(GraphNode * a_node){
 	Edge newEdge;
 	newEdge.Start = this;
 	newEdge.End = a_node;
+	newEdge.cost = 1;
 	edges.push_back(newEdge);
 }
 
@@ -26,6 +28,13 @@ void GraphNode::RemoveEdge(GraphNode * a_node){
 	if (edgeToDelete != edges.end()){
 		edges.erase(edgeToDelete);
 	}
+}
+
+void GraphNode::ResetVisit(){
+	previousNode = NULL;
+	visited = false;
+	weight = INFINITY;
+
 }
 
 //Graph
@@ -111,26 +120,56 @@ bool Graph::SearchBFS(GraphNode* a_Start, GraphNode* a_End){
 }
 
 bool Graph::SearchDJK(GraphNode* a_Start, GraphNode* a_End){
-	std::list<GraphNode*>nodeList;
-	for (int i = 0; i < nodes.size(); i++){
-		nodes[i]->weight = INFINITY;
-	}
+	//Reset Nodes/Weights
+	ResetVisted();
+
+	//Push start node onto the priority queue
+	std::list<GraphNode*> nodeList;
+	a_Start->previousNode = a_Start;
 	a_Start->weight = 0;
-	nodeList.push_back(a_Start);
+	nodeList.push_front(a_Start);
+	//goal = a_End;
+
+	//While queue not empty
 	while (!nodeList.empty()){
-		GraphNode* current = nodeList.back();
+		//Sort
+		nodeList.sort(NodeCompare);
+
+		//Get current node off the end of the queue and remove it
+		GraphNode* currentNode = nodeList.back();
 		nodeList.pop_back();
-		if (current->visited == true){
-			continue;
-		}
-		current->visited = true;
-		if (current == a_End){
+
+		//Mark as traversed
+		if (currentNode == a_End){
 			return true;
 		}
-		for (int i = 0; i < current->edges.size(); i++){
-			nodeList.push_back(current->edges[i].End);
+		currentNode->visited = true;
+
+		//Loop through the edges
+		for (EdgeList::iterator i = currentNode->edges.begin(); i != currentNode->edges.end(); i++){
+			GraphNode* endNode = (*i).End;
+
+			//If end node not traversed
+			if (!endNode->visited){
+				//Calculate current node's weight = edge cost
+				float cost = currentNode->weight + (*i).cost;
+
+				//If cost is less than existing weight cost in end node
+				if (cost < endNode->weight){
+					//set end node previous node to current node
+					endNode->previousNode = currentNode;
+
+					//set end node weight to current node weight + edge cost
+					endNode->weight = cost;
+
+					//if end node not in queue
+					if (!endNode->visited){
+						//push end node onto the queue
+						nodeList.push_front(endNode);
+					}
+				}
+			}
 		}
-		
 	}
 	return false;
 }
@@ -142,4 +181,8 @@ bool Neighbors(GraphNode* a_nodeA, GraphNode* a_nodeB){
 		}
 	}
 	return false;
+}
+
+bool NodeCompare(const GraphNode* a_left, const GraphNode* a_right){
+	return (a_left->weight < a_right->weight);
 }

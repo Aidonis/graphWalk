@@ -13,16 +13,14 @@ int main(){
 	bool areNeighbors = Neighbors(graph.nodes[1], graph.nodes[2]);
 	std::cout << "Node 1 and Node 5 are neighbors: " << areNeighbors << std::endl;
 
-	std::cout << graph.SearchBFS(graph.nodes[3], graph.nodes[12]) << std::endl;
+	std::cout << graph.SearchDFS(graph.nodes[2], graph.nodes[12]) << std::endl;
 
 	std::cout << "What has been visted" << std::endl;
 	for (int i = 0; i < graph.nodes.size(); i++){
 		if (graph.nodes[i]->visited == true){
-			std::cout << "(" << graph.nodes[i]->x << "," << graph.nodes[i]->y << ")" << std::endl;
+			std::cout << "(" << graph.nodes[i]->pos.x << "," << graph.nodes[i]->pos.y << ")" << std::endl;
 		}
 	}
-	graph.ResetVisted();
-	
 
 	system("pause");
 	return 0;
